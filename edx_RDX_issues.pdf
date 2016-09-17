@@ -1,0 +1,309 @@
+1.pass instead a batch_input_shape argument, where the batch dimension is included. This is useful for specifying a fixed batch size (e.g. with stateful RNNs).
+
+
+The Merge layer
+
+Multiple Sequential instances can be merged into a single output via a Merge layer. The output is a layer that can be added as first layer in a new Sequential model. For instance, here's a model with two separate input branches getting merged: What is this merge layer ? is this the one where  send resource embeddings seperately and the country id and other bull shit sepaerately ..?????
+
+
+You can also pass a function as the mode argument, allowing for arbitrary transformations:
+
+merged = Merge([left_branch, right_branch], mode=lambda x, y: x - y)
+
+
+a list of metrics. For any classification problem you will want to set this to metrics=['accuracy']. A metric could be the string identifier of an existing metric (only accuracy is supported at this point), or a custom metric function.???? What is this accuracy thing???
+
+
+
+from keras.layers import TimeDistributed
+
+# input tensor for sequences of 20 timesteps,
+# each containing a 784-dimensional vector
+input_sequences = Input(shape=(20, 784))
+
+# this applies our previous model to every timestep in the input sequences.
+# the output of the previous model was a 10-way softmax,
+# so the output of the layer below will be a sequence of 20 vectors of size 10.
+processed_sequences = TimeDistributed(model)(input_sequences)
+
+
+How do you determine the embedding
+Does the embeddinf need  to have it's own LSTM>>>
+
+What is auxillary loss
+what is loss weights ????
+
+model.set_weights(weights): sets the values of the weights of the model, from a list of Numpy arrays. The arrays in the list should have the same shape as those returned by get_weights()
+sample_weight_mode: if you need to do timestep-wise sample weighting (2D weights), set this to "temporal". "None" defaults to sample-wise weights (1D). If the model has multiple outputs, you can use a different  sample_weight_mode on each output by passing a dictionary or a list of modes.
+
+
+
+class_weight: optional dictionary mapping class indices (integers) to a weight (float) to apply to the model's loss for the samples from this class during training. This can be useful to tell the model to "pay more attention" to samples from an under-represented class.
+
+
+sample_weight: optional array of the same length as x, containing weights to apply to the model's loss for each sample. In the case of temporal data, you can pass a 2D array with shape (samples, sequence_length), to apply a different weight to every timestep of every sample. In this case you should make sure to specify sample_weight_mode="temporal" in compile().
+
+
+Is there any rule of thumb to select the number of dense or lstm layer .. 32 64 etc ?
+
+
+Seems like embedding layer does the masking... So should we put this before or after the lstm or simple rnn for masking
+
+
+
+...>>> Seperate x s downstream to split
+
+
+Just do rid and country for now
+
+New idea by ZACHH... create seperate lstm for each embedding
+
+multiple outputs check documentation
+
+
+We will have 159 outputr seperate layers with 2 dense for right and wrong
+
+
+Slice the putut mask ondemand reshape S into proper matrix ..
+
+
+imdb_lstm    simple
+
+
+
+Approach one output loss: create a categorical cross entropy.. The problems we don't care, the correct ones and the incorrect ones...
+
+Approach 2: (The main one) Binary cross entropy where we mask the ones that dont matter and the ones that matter we do a binary cross entropy by the way of ones and zeros
+
+
+Sample_weight is the one that matters and the embedding maskibg is for inputing masks which is irrelevant for us
+
+
+
+* To do :
+
+
+
+we need to create 159 seperate instances of outputs for each problem
+
+create a list of
+
+for i between 1 to 159:
+
+prediction+i=time distributed(...)
+slice of Y as  a list
+
+list.append(prediction+i) we may as well create a dict of the slices named one to 159
+dict_mode[prdiction i]= 'temporal'
+
+dict_weight[prediction i]=output problem slice i
+dict_loss[prediction_i]= 'binary cross entropy'
+dict_metric ''''''='accuracy'
+
+
+in the compile (sample_weight _mode= dict_mode)
+
+in the fit (inout, y dict , sample_weight=dict_weight)
+
+
+validation: we create a thershold and make it 1 for above 0.5 and 0 for below 0.5
+
+
+
+
+
+~/run.sh deep1.py   to run using GPU acceleration
+
+
+explore backend code in home dicrectory for getting outputs for the  hidden states
+
+
+
+validation
+
+The prediction will give you 159 ouputs but during calculating the accuracy we need to mask off the irrlevant ones and compute the relevalnt ones and take a mean for each sample and for all the samples take the mean of individual accuracy
+
+
+
+
+Gradient clipping .. clip the loss in both direction so that extraneous loss will not influence  the gradient heavily
+
+
+
+
+screen
+
+go back and do screen -r
+
+ctrl+a,d detach screen
+
+and resume alternate screen
+
+screen -ls
+screen -r index of the screen
+
+
+ctrl+a, esc   can use page up and page down
+
+
+ML in education
+
+The objective is to produce reserh that is ready to be submitted to a conference in eductation.. advanced research graduate research course
+
+The research is in ml in edu research
+
+submit papers in education conferences as posters , papers,
+
+
+Bayes knowlegde tracing
+
+
+Litreture review of moocs
+
+select a paper and present it
+
+
+
+Zachary Pardos	9:12 AM
+predict
+
+predict(self, x, batch_size=32, verbose=0)
+Generates output predictions for the input samples, processing the samples in a batched way.
+
+Arguments
+
+x: the input data, as a Numpy array.
+batch_size: integer.
+verbose: verbosity mode, 0 or 1.
+Returns
+
+A Numpy array of predictions.
+optimizer = adam
+clipnorm = 0.1
+
+
+parameters:
+
+optimizers
+
+epochs
+
+loss function
+
+batch size
+
+
+
+ML in ed
+
+He has shared a document in slack...
+
+Put the papers here that will be good for students to read ML methods.. intersting materials
+
+to ML and intersting papers post video lectures and link to resource and a short desctiption
+
+
+DL
+
+Embedding
+
+Bayesian networks
+
+Probabilistic graphical models
+
+add at least 10 resources
+
+
+
+
+Read through the following papers and id areas where the i schoolers might be stuck in terminologies
+or find it hard conceptually
+
+Wants to cover
+
+DL RNN Ill HANDLE Feed forward netwok ..
+
+
+Word to vec
+
+
+
+
+
+
+
+Notes: HAAS
+
+2nd block
+
+Data analysis tools
+
+September 30th.. 4.30 -- 7.30
+
+
+
+
+
+Behavior and cognition in moocs  - December deadline
+
+Learning at Scale : Is not friendly to methodology data mining .. buyt would be friendly
+if we discover something substantive from our visual exploration of the space ..
+
+1. Start writing something ...
+
+2. Start writing the methodlogy and related work wrt to neiral net ....
+
+3. We need to be documenting the rationale .. lower level rationale .. document that
+
+4.
+
+
+Train on batch .. read faq
+
+
+Requirements
+
+Hover over
+
+Summerise selection
+
+QuickLY switch colors .. based on features
+
+Filter the display of points by parametes.
+
+Two panels the embedding output diagram and the hidden output diagram .. can we use jitter for bug blobs on same point
+
+The embedding plot will have resources as data points coloured by their chapter or  sequential and it will also
+have the student data points
+
+Have a static embedded polot as backbground and have studnet traversal in seperate colour traversing as we scrool the timeline
+
+
+One slider connecting teh embed plot with the hidden problem_counter_tracker
+
+
+He wants the time as a continuous variable which means a student will appear as
+
+
+Wants both the panels to be interlinked in terms of selection and time slider
+
+Can we check of widget for continuous value
+
+
+
+two versions of time sldiers
+
+1. ber where show the last event and persist it upto a window or limit and the otehr one is plot everything in that ...
+
+
+Quantification of social graph of vector -- describe the origianal multidimension embedded space
+
+1. For a set of orinigal data points what is the density and dispersion of those points some metric that gives us the spread.. and if not how concentrated are they
+
+2. How close is one set from another.. US students  .. Average allof the vectors in one set and another and get the cosine similarity
+
+3 Centrality .. so you have three or more sets of data poinst which one is more central ..
+ususally cnetraity is calculated with respect to a single persone on a social netrrk s
+
+
+All of these statistics can be calculated on resoruces and also on students ..

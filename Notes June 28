@@ -1,0 +1,75 @@
+
+Important notes:
+
+1. Create a list of unique students and and create a dictionary with numbers assigned to them
+2. create a 3D tensor with student as rows and time slices as columns along with the resource ID, Action, resource and action concatinated (create a seperate map for the same), country, gender (represnted as one hot [1,0], [0,1], [0,0]), Age (indexed) and education level indexed
+
+3. The y would be a. In case of multi pronged question where single event_check leads to multiple answer the prior step to the problem check will have outputs for all the sets ... however the same may not be True for seperate questions.
+
+4. Create a seperate weight matrix for the mask for y
+
+5. when iterating through each resource in the times slice create a counter so that you can place the right thing at the right position at the input tensor
+
+6. Find the max number of actions /timeslices that are entirely possible and create a matrix with students as rows and the column lenght as the max length we know and fill it up y zeros
+
+7. Read Zachs code on Khan acad dle data helper
+
+8. Approach 1: Define and name a seperate output for each question in Keras also define aseperate 2d S matrix for each output then, when defining and assigning sample weigjt, pass a dictionary which has the name of the output ayer with the corresponding s matrix
+
+Approach 2:
+
+Create a modified loss function to ignore negative one or irreleval outputs in loss and do appropriate normalisation when comparing with the right one ..
+
+## seek video not type but id
+
+
+
+Questions:
+
+How to represent time in this system
+
+
+
+What to do for single , no events and less events? should we retain them
+
+what if the student has not performed or tried a single exercise? how will that affect the backpropagation
+'
+eliminate the guys who don't have y labels as in problem check event
+
+user attibute > did you enroll in the class b4 it ended y/n
+
+
+####check if the first start date si within the official course end date and if so add an attribute for the same..
+
+get a descriptive statistics of user profie df
+
+and from event log descriptive statsitics of country id's
+
+
+
+
+
+start : 2014-02-24T00:30:00Z"
+
+end : 2014-03-31T09:30:00Z"
+
+
+from itertools import cycle
+>>> count = 0
+>>> for item in cycle('XYZ'):
+...     if count > 7:
+...         break
+...     print(item)
+...     count += 1
+...
+
+
+from itertools import compress
+>>> letters = 'ABCDEFG'
+>>> bools = [True, False, True, True, False]
+>>> list(compress(letters, bools))
+['A', 'C', 'D']
+
+
+
+account for the masks... create a list of zeros and ones
